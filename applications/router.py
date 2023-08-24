@@ -5,8 +5,7 @@ from __future__ import annotations
 from sanic import Blueprint
 
 from .auth.router import router as user_router
-from .apps.router import ROUTER_TUPLE as apps_router
+from .apps.router import ROUTER_GROUP as APP_ROUTER_GROUP
 
-BLUE_TUPLE: tuple[Blueprint, ...] = (
-                                        user_router,
-                                    ) + apps_router
+ROUTER_GROUP = Blueprint.group(user_router, APP_ROUTER_GROUP)
+

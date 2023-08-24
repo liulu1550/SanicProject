@@ -7,7 +7,7 @@ from typing import Optional
 from sanic import Sanic
 from tortoise.contrib.sanic import register_tortoise
 
-from applications.router import BLUE_TUPLE
+from applications.router import ROUTER_GROUP
 from core.listeners import LISTENER_TUPLE, BaseListener
 from core.middlewares import MIDDLEWARE_TUPLE, BaseMiddleware
 from core.exception_handlers import EXC_HDL_TUPLE, BaseExcHandler
@@ -46,10 +46,7 @@ def create_app(env: Optional[str] = None) -> Sanic:
 
 def register_blueprint(app: Sanic, prefix: Optional[str] = 'api') -> None:
     """注册蓝图"""
-    for blueprint in BLUE_TUPLE:
-        blueprint.url_prefix = '/'.join(url for url in (prefix, blueprint.url_prefix) if url)
-        app.blueprint(blueprint)
-    return None
+    app.blueprint(ROUTER_GROUP)
 
 
 def register_listener(app: Sanic, settings: type[BaseSettings]) -> None:
