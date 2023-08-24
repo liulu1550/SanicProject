@@ -1,0 +1,5 @@
+/migrations/
+/venv/
+/pyproject.toml
+/logs/
+/.idea/
