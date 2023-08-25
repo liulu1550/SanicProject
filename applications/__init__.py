@@ -43,9 +43,9 @@ def create_app(env: Optional[str] = None) -> Sanic:
     return app
 
 
-def register_blueprint(app: Sanic, prefix: Optional[str] = 'api') -> None:
+def register_blueprint(app: Sanic):
     """注册蓝图"""
-    app.blueprint(ROUTER_GROUP)
+    return app.blueprint(ROUTER_GROUP)
 
 
 def register_listener(app: Sanic, settings: type[BaseSettings]) -> None:
