@@ -1,6 +1,6 @@
 from sanic import Request, HTTPResponse
 
-from core.response import response_ok
+from core.response import json_success_response
 from utils.request_utils import get_request_location, get_real_ip, get_browser_name, get_os
 
 
@@ -11,7 +11,7 @@ async def demo2_view(request: Request) -> HTTPResponse:
     :return:
     """
 
-    return response_ok()
+    return json_success_response()
 
 
 async def get_location(request):
@@ -19,4 +19,11 @@ async def get_location(request):
     data2 = await get_real_ip(request)
     data3 = await get_browser_name(request)
     data4 = await get_os(request)
-    return response_ok()
+    print(type(data1))
+    data = {
+        "data1":data1,
+        "data2":data2,
+        "data3":data3,
+        "data4":data4,
+    }
+    return json_success_response(data)

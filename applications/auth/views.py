@@ -6,9 +6,8 @@ from sanic import Request, HTTPResponse
 from tortoise.queryset import QuerySet
 
 from applications.models import User
-from core.error_code import ECEnum
-from core.response import response_ok, response_fail
-from libs.error_code.exception import ECException
+from core.response import json_success_response
+
 from libs.logger import LoggerProxy
 
 logger: LoggerProxy = LoggerProxy(__name__)
@@ -25,4 +24,4 @@ async def user_list(request: Request) -> HTTPResponse:
     # raise ECException(ECEnum.TestError)
     # return response_fail(enum=ECEnum.TestError)
 
-    return response_ok(data=data)
+    return json_success_response()

@@ -1,58 +1,62 @@
-# coding: utf-8
+from sanic import response
 
-"""响应相关配置"""
-
-from __future__ import annotations
-from typing import Any, Optional
-from decimal import Decimal
-from json import JSONEncoder, dumps
-from datetime import datetime
-from sanic import json
-from sanic.response import HTTPResponse
-
-from .error_code import ECEnum
+from core.message import error_message, CodeDict
 
 
-class ExtJsonEncoder(JSONEncoder):
-    """扩展json编码器"""
-    def default(self, o: Any) -> Any:
-        if isinstance(o, datetime):
-            return o.strftime("%Y-%m-%d %H:%M:%S")
-        elif isinstance(o, Decimal):
-            return str(o)
-        return super().default(o)
+def json_response(code=200, body=None, message="", extend=None, headers=None):
+    """
+    通用json响应方法
+    :param code: 响应码
+    :param body: 响应主体
+    :param message: 响应的错误消息
+    :param extend: 基础参数扩展
+    :type extend: dict
+    :param headers: 扩展响应头
+    :type headers:dict
+    :return: JSON
+    """
+    result = {
+        "code": code,
+        "msg": message,
+        "data": body if body is not None else {}
+    }
+
+    # 如果追加了其它参数，则合并
+    if extend and isinstance(extend, dict):
+        result = dict(result, **extend)
+
+    return response.json(body=result, headers=headers)
 
 
-def response_ok(data: Any = None) -> HTTPResponse:
-    """成功返回
+def json_success_response(body=None, extend=None, headers=None):
+    """
+    响应内容正确
+    :param body: 响应体
+    :param extend: 扩展参数
+    :param headers: 响应头参数
+    """
+    return json_response(body=body, message=error_message.get(200, ""),
+                         extend=extend, headers=headers)
 
-    :param data: 数据
+
+def json_fail_response(code=CodeDict.fail, message=None, extend=None, headers=None, body=None):
+    """
+    请求出错的响应
+    :param code: 响应错误识别码
+    :param message: 错误友好提示内容
+    :param extend: 扩展参数
+    :param headers: 响应头参数
+    :param body:
     :return:
     """
-    # 错误码
-    code: str = "0"
-    # 内容
-    content: dict[str, Any] = dict(code=code, data=data)
-    return json(content, dumps=dumps, cls=ExtJsonEncoder)
+    if not message:
+        try:
+            message = error_message[code]
+        except KeyError:
+            code = 20003
+            message = error_message.get(code)
+    if not body:
+        body = {}
 
-
-def response_fail(
-        enum: Optional[ECEnum] = None,
-        desc: Any = "") -> HTTPResponse:
-    """失败返回
-
-    :param enum: 错误码枚举类
-    :param desc: 错误详情
-    :return:
-    """
-    if enum is None:
-        enum = ECEnum.ServerError
-    # 错误码
-    code: str = str(enum.code)
-    # error码
-    error: str = enum.error
-    # 错误信息
-    message: str = enum.message
-    # 内容
-    content: dict[str, Any] = dict(code=code, error=error, message=message, desc=desc)
-    return json(content, dumps=dumps, cls=ExtJsonEncoder)
+    return json_response(code, body=body, message=message,
+                         extend=extend, headers=headers)

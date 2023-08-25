@@ -10,7 +10,6 @@ from tortoise.contrib.sanic import register_tortoise
 from applications.router import ROUTER_GROUP
 from core.listeners import LISTENER_TUPLE, BaseListener
 from core.middlewares import MIDDLEWARE_TUPLE, BaseMiddleware
-from core.exception_handlers import EXC_HDL_TUPLE, BaseExcHandler
 from settings import get_settings, BaseSettings
 
 
@@ -35,11 +34,11 @@ def create_app(env: Optional[str] = None) -> Sanic:
     # 注册中间件
     register_middleware(app)
 
-    # 注册异常处理
-    register_exception_handler(app)
-
     # 注册蓝图
     register_blueprint(app)
+
+    # 注册异常处理
+    app.config.FALLBACK_ERROR_FORMAT = "json"
 
     return app
 
@@ -69,10 +68,3 @@ def register_middleware(app: Sanic) -> None:
             app.register_middleware(middle.before_response, attach_to='response')
     return None
 
-
-def register_exception_handler(app: Sanic) -> None:
-    """注册异常处理"""
-    for exc_hdl_cls in EXC_HDL_TUPLE:
-        exc_hdl: BaseExcHandler = exc_hdl_cls()
-        app.error_handler.add(exc_hdl.get_exception(), exc_hdl.handle)
-    return None

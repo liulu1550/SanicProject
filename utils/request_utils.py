@@ -67,6 +67,6 @@ async def get_request_location(request):
     try:
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
-            return response.text
+            return response.text.replace("\n","")
     except:
         return ""

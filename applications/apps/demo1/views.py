@@ -1,7 +1,7 @@
 from sanic import Request, HTTPResponse
 from sanic.views import HTTPMethodView
 
-from core.response import response_ok
+from core.response import json_success_response
 
 
 async def demo1_view(request: Request) -> HTTPResponse:
@@ -11,7 +11,7 @@ async def demo1_view(request: Request) -> HTTPResponse:
     :return:123
     """
 
-    return response_ok()
+    return json_success_response()
 
 
 class DemoAPIView(HTTPMethodView):
@@ -40,7 +40,7 @@ class DemoAPIView(HTTPMethodView):
             "name": name,
             "age": age
         }
-        return response_ok(result)
+        return json_success_response(result)
 
     async def post(self, request: Request) -> HTTPResponse:
         name = request.json.get('name', None)
@@ -50,4 +50,4 @@ class DemoAPIView(HTTPMethodView):
             "name": name,
             "age": age
         }
-        return response_ok(result)
+        return json_success_response(result)
