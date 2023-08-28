@@ -13,7 +13,6 @@ class BaseMiddleware(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     async def before_request(self, request: Request) -> None:
         """请求前处理"""
-        print(123)
         pass
 
     @abc.abstractmethod

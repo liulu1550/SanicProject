@@ -1,3 +1,4 @@
+from redis.asyncio import Redis
 from sanic import Request, HTTPResponse
 from sanic.views import HTTPMethodView
 
@@ -10,6 +11,8 @@ async def demo1_view(request: Request) -> HTTPResponse:
     :param request:
     :return:123
     """
+    redis_client: Redis = request.ctx.redis_client
+    await redis_client.set("name", "liulu", 60)
 
     return json_success_response()
 

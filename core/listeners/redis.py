@@ -2,10 +2,13 @@
 
 from asyncio.base_events import BaseEventLoop
 
+import redis
 from sanic import Sanic
-from aioredis import from_url
-from aioredis.client import Redis
-
+# from redis import asyncio.redis.Redis as aioredis
+# from aioredis import from_url
+# from aioredis.client import Redis
+from redis.asyncio.client import Redis
+from redis.asyncio import from_url
 from .base import BaseListener
 from libs.logger import LoggerProxy
 
